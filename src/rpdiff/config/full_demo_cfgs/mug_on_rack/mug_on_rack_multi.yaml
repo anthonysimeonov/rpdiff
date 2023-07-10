@@ -1,0 +1,13 @@
+inherit_from: base.yaml
+
+experiment:
+    experiment_name: mug_rack_multi_test
+    debug: False
+    num_iterations: 100
+    parent_class: syn_rack_hard
+    child_class: mug
+    is_child_shapenet_obj: true
+    task_name: mug_on_rack_multi
+    n_parent_instances: 3
+    demo:
+        vary_about_peg: True

@@ -1,0 +1,71 @@
+inherit_from: base.yaml
+experiment:
+    num_train_workers: 12
+    batch_size: 16
+    experiment_name: book_on_bookshelf_2view_rndori_refine_pose_only_refine_full_pcd_1q_cropped_parent_nsm_arch_global_diffsteps_timestep_anneal_crop_interp_large_5_more_precise_sampling_rpdiff_edit
+    meshcat_on: true
+    resume: true
+    num_iterations: 500000
+    train:
+        train_coarse_aff: false
+        train_refine_pose: true
+        train_success: false
+        out_log_full: false
+        out_log_coarse_aff: true
+        out_log_refine_pose: true
+        out_log_success: true
+data:
+    dataset_path: book_on_bookshelf_double_view_rnd_ori/task_name_book_in_bookshelf_chunked
+    parent_mesh_dir: syn_bookshelf_obj_unnormalized
+    child_mesh_dir: syn_books_obj
+    load_full_pcd: false
+    pose_perturb:
+        use_small_rot_scale: False
+        use_small_trans_scale: False
+        rot_scale_deg: 360
+        trans_scale: 0.48
+    refine_pose:
+        diffusion_steps: true
+        n_diffusion_steps: 5
+        vary_crop_size_diffusion: true
+        interp_diffusion_traj: true
+        precise_diff_prob: true
+        init_scene_bounding_box: true
+        aug:
+            rot_aug: 
+
+optimizer:
+    refine_pose:
+        type: AdamW
+        valid_opts:
+        - Adam
+        - AdamW
+        use_schedule: true
+        schedule:
+            fixed_lr: false
+            min_lr: 1.0e-06
+            warmup_epochs: 50
+        opt_kwargs:
+            AdamW:
+                lr: 0.0001
+                weight_decay: 1.0e-01
+                betas:
+                - 0.9
+                - 0.95
+
+model:
+    refine_pose:
+        type: nsm_transformer # transformer, tranfsormer_mq, pointnet, cnn    
+        model_kwargs:
+            nsm_transformer:
+                n_queries: 1
+                use_timestep_emb: True
+                max_timestep: 5 
+                timestep_pool_method: meanpool  # meanpool, concat
+
+loss:
+    refine_pose:
+        type: tf_chamfer # _multi_query_affordance
+    tf_chamfer: # _multi_query_affordance:
+        l1: True
+

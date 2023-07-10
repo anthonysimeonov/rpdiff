@@ -1,0 +1,73 @@
+inherit_from: base.yaml
+experiment:
+    num_train_workers: 12
+    batch_size: 16
+    experiment_name: mug_on_rack_multi_refine_pose_only_nsmglobal_1q_diff_steps_timestep_anneal_crop_interp_large_5_more_precise_sampling_rpdiff_edit
+    meshcat_on: True
+    resume: True
+    num_iterations: 500000
+    train:
+        train_coarse_aff: False
+        train_refine_pose: True
+        train_success: False
+        out_log_full: False
+        out_log_coarse_aff: True
+        out_log_refine_pose: True
+        out_log_success: True
+
+
+data:
+    dataset_path: mug_on_rack_multi_large_proc_gen_demos/task_name_mug_on_rack_multi_chunked  # set me to specify dataset folder
+    parent_mesh_dir: syn_rack_med
+    child_mesh_dir: mug_centered_obj_normalized
+    load_full_pcd: False
+    pose_perturb:
+        use_small_rot_scale: False
+        use_small_trans_scale: False
+        rot_scale_deg: 360
+        trans_scale: 0.48
+    refine_pose:
+        diffusion_steps: true
+        n_diffusion_steps: 5
+        vary_crop_size_diffusion: true
+        interp_diffusion_traj: true
+        precise_diff_prob: true
+        aug:
+            rot_aug: 
+
+
+optimizer:
+    refine_pose:
+        type: AdamW
+        valid_opts:
+        - Adam
+        - AdamW
+        use_schedule: true
+        schedule:
+            fixed_lr: false
+            min_lr: 1.0e-06
+            warmup_epochs: 50
+        opt_kwargs:
+            AdamW:
+                lr: 0.0001
+                weight_decay: 1.0e-01
+                betas:
+                - 0.9
+                - 0.95
+
+
+model:
+    refine_pose:
+        type: nsm_transformer 
+        model_kwargs:
+            nsm_transformer:
+                n_queries: 1
+                use_timestep_emb: True
+                max_timestep: 5
+                timestep_pool_method: meanpool  # meanpool, concat
+
+loss:
+    refine_pose:
+        type: tf_chamfer
+    tf_chamfer:
+        l1: True

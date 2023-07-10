@@ -1,0 +1,316 @@
+experiment:
+    experiment_name: smoketest
+    logdir: rpdiff
+    resume_iter: 0
+    resume: False
+    batch_size: 16
+    num_iterations: 100000
+    val_interval: 1000
+    save_interval: 5000
+    log_interval: 10
+    num_train_workers: 12
+    num_val_workers: 1
+    meshcat_on: False
+    debug: False
+    train:
+        train_refine_pose: True
+        train_success: True
+        train_coarse_aff: True
+        out_log_full: True
+        out_log_refine_pose: False
+        out_log_success: False
+        out_log_coarse_aff: False
+        success_from_refine_pred: False
+        coarse_aff_from_coarse_pred: False
+        refine_pose_from_coarse_pred: False
+        success_from_coarse_pred: False
+        predict_offset: False
+
+data:
+    dataset_path: null  # set me to specify dataset folder
+    data_root: task_demos # task_demos/demo_aug
+    split: train
+    chunked: True
+    load_into_memory: True
+    load_full_pcd: False
+    parent_mesh_dir:
+    child_mesh_dir:
+    parent_crop: True
+    rot_aug: null # None, yaw, rot
+    apply_pcd_aug: False
+    pcd_aug_prob: 0.0
+    pcd_aug_pp_std: 0.01
+    full_pcd_aug: False
+    shape_pcd_n: 2048
+    parent_shape_pcd_n: 
+    child_shape_pcd_n: 
+    custom_split_fname: null
+    rot_grid_samples: 1.0e+4
+    rot_grid_bins: null  # gets set when we actually compute the grid
+    euler_bins_per_axis: 72
+    debug_viz: False
+    voxel_grid:
+        reso_grid: 32
+        padding: 0.1
+    pose_perturb:
+        rot_scale_deg: 360
+        trans_scale: 0.24
+        small_rot_scale_deg: 30
+        small_trans_scale: 0.04
+        use_small_rot_scale: False
+        use_small_trans_scale: False
+        rot_min:
+        trans_min:
+        parent_cent_offset_scale: 0.01
+        parent_cent_offset_prob: 0.0
+        rnd_parent_pt_offset_prob: 0.0
+        rnd_parent_pcd_pt_offset_prob: 0.0
+        child_start_ori_init: False
+    coarse_aff:
+        shape_pcd_n: 
+        parent_shape_pcd_n: 
+        child_shape_pcd_n: 
+        scene_mean: [0.35, 0.0, 0.0]
+        scene_extents: [0.7, 1.2, 0.0]
+        c2f:
+            parent_crop: True
+            crop_box_length: 0.18
+            parent_crop_same_n: True
+            use_pred_prob: 0.5
+        aug:
+            rot_aug:
+            apply_pcd_aug: 
+            pcd_aug_prob: 
+    refine_pose:
+        shape_pcd_n: 
+        parent_shape_pcd_n: 
+        child_shape_pcd_n: 
+        parent_crop: True
+        parent_crop_same_n: True
+        crop_box_length: 0.18
+        predict_offset: False
+        child_start_ori_init: False
+        diffusion_steps: False
+        n_diffusion_steps: 50
+        vary_crop_size_diffusion: False
+        interp_diffusion_traj: False
+        diffusion_full_pose_target: False  # if True, train to go all the way back to ground-truth (not incremental)
+        precise_diff_prob: False  # if True, vary probability of sampling diffusion steps to emphasize more precise (closer to 0)
+        init_scene_bounding_box: False  # if True, ignore the variance values and initialize in scene point cloud bounding box
+        aug:
+            rot_aug:
+            apply_pcd_aug: 
+            pcd_aug_prob: 
+    success:
+        shape_pcd_n: 
+        parent_shape_pcd_n: 
+        child_shape_pcd_n: 
+        success_rot_scale_deg: 5
+        success_trans_scale: 0.005
+        fail_rot_scale_deg: 180
+        fail_trans_scale: 0.05
+        fail_rot_min_deg: 5
+        fail_trans_min: 0.005
+        success_fail_prob: 0.5
+        rot_only_prob: 0.35
+        aug:
+            rot_aug:
+            apply_pcd_aug: 
+            pcd_aug_prob: 
+
+optimizer:
+    coarse_aff:
+        type: Adam
+        valid_opts: ['Adam', 'AdamW']
+        use_schedule: False
+    refine_pose:
+        type: AdamW
+        valid_opts: ['Adam', 'AdamW']
+        use_schedule: True
+    success:
+        type: AdamW
+        valid_opts: ['Adam', 'AdamW']
+        use_schedule: True
+    use_schedule: False
+    schedule:
+        fixed_lr: False
+        min_lr: 1.0e-6
+        warmup_epochs: 50
+    AdamW:
+        lr: 1.0e-4
+        weight_decay: 0.3
+        betas: [0.9, 0.95]
+        # beta1: 0.9
+        # beta2: 0.95
+    Adam:
+        lr: 1.0e-4
+        betas: [0.9, 0.95]
+        # beta1: 0.99
+        # beta2: 0.9999
+
+loss:
+    coarse_aff:
+        type: voxel_affordance_w_disc_rot
+        valid_losses: ['voxel_affordance', 'voxel_affordance_w_disc_rot', 'voxel_affordance_w_disc_rot_euler']
+        rot_only_on_refine: False
+    refine_pose:
+        type: tf_chamfer # tf_chamfer_multi_query_affordance
+        valid_losses: ['tf_chamfer', 'tf_chamfer_w_kldiv'] #, 'tf_chamfer_multi_query_affordance', 'tf_chamfer_multi_query_affordance_w_kldiv']
+        use_aux_multi_query_loss: False
+        alternating_mq: False
+        alternating_mq_kwargs:
+            warmup: 10000
+            mq_int: 1000
+            full_by_frac: 0.5
+            n_mq_samples: 10
+        chamf_only: False
+        trans_rot_only: False
+    success:
+        type: bce_w_logits
+        valid_losses: ['bce_w_logits', 'bce_wo_logits']
+        use_aux_multi_query_loss: False
+    voxel_affordance:
+    voxel_affordance_w_disc_rot:
+    tf_chamfer:
+        l1: False
+        trans_offset: False
+    tf_chamfer_w_kldiv:
+        l1: False
+        trans_offset: False
+    tf_chamfer_multi_query_affordance:
+        l1: False
+        trans_offset: False
+    tf_chamfer_multi_query_affordance_w_kldiv:
+        l1: False
+        trans_offset: False
+    bce_wo_logits:
+    bce_w_logits: 
+        pos_weight: 1.0
+        double_batch_size: False
+    kl_div:
+       rot_kl_weight: 1.0 
+       trans_kl_weight: 1.0 
+       anneal_rot: False
+       anneal_rot_total_epochs: null
+       anneal_rot_warmup_epochs: 10
+       anneal_trans: False
+       anneal_trans_total_epochs: null
+       anneal_trans_warmup_epochs: 10
+
+model:
+    coarse_aff:
+        type: cnn
+        feat_dim: 5
+        rot_feat_mean_child: False  # If True, use feature at voxel from child mean, else use pooled over all child voxels
+        rot_feat_global: False  # If True, use global pooled feature (regardless of mean_child True/False)
+        rot_feat_global_type: pc_pts  # "pc_pts" use parent/child voxels. Else, pool across whole voxel grid
+        multi_model: False
+        euler_rot: False
+        euler_bins_per_axis: 72
+        model2:
+            voxel_grid:
+                reso_grid: # 32
+                padding: # 0.1
+            rot_grid_samples: # 1.0e+4
+            rot_grid_bins: 
+    refine_pose:
+        type: nsm_transformer # nsm_transformer, transformer, tranfsormer_mq, pointnet, cnn    
+        # type: transformer # transformer, tranfsormer_mq, pointnet, cnn    
+        feat_dim: 3
+        model_kwargs:
+            nsm_transformer:
+                n_queries: 1
+                use_timestep_emb: True
+                max_timestep:  
+                timestep_pool_method: meanpool  # meanpool, concat
+    success:
+        type: nsm_transformer
+        feat_dim: 3
+    nsm_transformer:
+        n_blocks: 4
+        n_heads: 1
+        drop_p: 0.0
+        n_pts: 1024
+        pn_pts: 
+        cn_pts: 
+        hidden_dim: 256
+        pooling: max
+        bidir: False
+    nsm_transformer_cvae:
+        n_blocks: 4
+        n_heads: 1
+        drop_p: 0.0
+        n_pts: 1024
+        pn_pts: 
+        cn_pts: 
+        hidden_dim: 256
+        latent_dim: 
+        pooling: max
+        bidir: False
+        residual_latent: False
+        residual_tf_enc: False
+        latent_pool_method: meanpool  # meanpool, concat
+        tf_pool_method: meanpool  # meanpool, concat
+    nsm_transformer_mq:
+        n_blocks: 4
+        n_heads: 1
+        drop_p: 0.0
+        n_pts: 1024
+        pn_pts: 
+        cn_pts: 
+        hidden_dim: 256
+        pooling: max
+        n_queries: 2
+        return_intermediate: True
+    transformer:
+        n_blocks: 4
+        n_heads: 1
+        drop_p: 0.0
+        n_pts: 1024
+        pn_pts: 
+        cn_pts:
+        hidden_dim: 256
+        # predict_offset:
+    transformer_mq:
+        n_blocks: 4
+        n_heads: 1
+        drop_p: 0.0
+        n_pts: 1024
+        pn_pts: 
+        cn_pts:
+        hidden_dim: 256
+        n_queries: 2
+        predict_offset:
+    pointnet:
+        n_pts: 1024
+        pn_pts: 
+        cn_pts:
+        hidden_dim: 256
+        # predict_offset:
+    cnn:  # regular cnn
+        local_coord: True
+        # encoder: pointnet_local_pool
+        c_dim: 32
+        # encoder_kwargs:
+        hidden_dim: 32  
+        # plane_type: ['xz', 'xy', 'yz', 'grid']
+        plane_type: ['grid']
+        # grid_resolution: 32
+        unet3d: True
+        unet3d_kwargs:
+            num_levels: 3
+            f_maps: 32
+            in_channels: 32  
+            out_channels: 32  
+            plane_resolution: 128 
+        unet: False
+        unet_kwargs:
+            depth: 5
+            merge_mode: concat
+            start_filts: 32
+    minkcnn:  # minkowski engine
+    feat_encoder:
+        type: null
+        parent_encoder_path: null
+        child_encoder_path: null
+        joint_encoder_path: null

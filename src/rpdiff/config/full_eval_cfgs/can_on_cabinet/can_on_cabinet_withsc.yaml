@@ -1,0 +1,51 @@
+inherit_from: base.yaml
+experiment:
+    experiment_name: can_on_cabinet_nosc
+    num_iterations: 50
+    meshcat_on: True
+    pybullet_viz: False
+    parent_class: syn_cabinet
+    child_class: syn_can
+    is_parent_shapenet_obj: False
+    is_child_shapenet_obj: False
+    n_parent_instances: 1
+    parent_crop: True
+    use_floating_hand_execution: True
+    show_floating_hand_meshcat: False
+    eval:
+        # pose_refine_model_name: can_on_cabinet_refine_pose_only_refine_rrp_1q_with_cropped_parent_nsm_arch_global_diff_steps_timestep_anneal_crop_interp_large_5_more_precise_sampling_rpdiff_edit
+        # success_model_name: can_on_cabinet_success_only_larger_trans_failures_yaw_rot_pos_weight_1-0_full_4096_pn_nsmglobal_arch
+        pose_refine_model_name: quickstart_weights/can_cabinet_pose_diff_varying_crop_qs
+        success_model_name: quickstart_weights/can_cabinet_success_cls_qs
+        rand_mesh_scale: False
+        parent_load_pose_type: random_upright
+        child_load_pose_type: random_upright
+        inference_method: multistep_regression_scene_combine_succ_cls 
+        n_refine_iters: 50
+        return_rand: False
+        with_coll: False
+        init_k_val: 32
+        init_orig_ori: False
+        no_success_classifier: False
+        variable_size_crop: True
+        timestep_emb_decay_factor: 20 # a bit less diversity
+        # timestep_emb_decay_factor: 45 # some more diversity, occasionally worse quality ()
+        add_per_iter_noise: True
+        per_iter_noise_kwargs:
+            rot:
+                angle_deg: 20 
+                rate: 6.5
+            trans:
+                trans_dist: 0.03 
+                rate: 5.5
+
+environment:
+    n_cameras: 3
+    cameras:
+        yaw_angles: [330.0, 30.0, 90]
+        distance: 1.0
+        pitch_set: [-10.0, -10.0, -35.0]
+        focus_pt_set: [[0.5, 0.5, 1.4], [0.5, 0.5, 1.4], [0.35, 0.0, 1.1]]
+        single_focus_pt: false
+        single_pitch: false
+

@@ -1,0 +1,64 @@
+inherit_from: base.yaml
+experiment:
+    num_train_workers: 12
+    batch_size: 64
+    experiment_name: can_on_cabinet_succ_cls
+    meshcat_on: False
+    resume: False
+    num_iterations: 500000
+    train:
+        train_coarse_aff: False
+        train_refine_pose: False
+        train_success: True
+        out_log_full: False
+        out_log_coarse_aff: True
+        out_log_refine_pose: True
+        out_log_success: True
+
+data:
+    dataset_path: can_in_cabinet_stack/task_name_stack_can_in_cabinet_chunked  # set me to specify dataset folder
+    parent_mesh_dir: syn_can_cabinet_obj_unnormalized
+    child_mesh_dir: syns_can_obj
+    success:
+        shape_pcd_n:
+        parent_shape_pcd_n: 8192
+        child_shape_pcd_n:
+        rot_only_prob: 0.5
+        aug:
+            rot_aug: yaw_rot
+
+optimizer:
+    success:
+        type: AdamW
+        valid_opts:
+        - Adam
+        - AdamW
+        use_schedule: true
+        schedule:
+            fixed_lr: false
+            min_lr: 1.0e-06
+            warmup_epochs: 10
+        opt_kwargs:
+            AdamW:
+                lr: 0.0001
+                weight_decay: 1.0e-03
+                betas:
+                - 0.9
+                - 0.999
+
+loss:
+    success:
+        type: bce_w_logits
+    bce_w_logits:
+        pos_weight: 1.0
+
+model:
+    success:
+        type: nsm_transformer
+        model_kwargs:
+            nsm_transformer:
+                sigmoid: False
+                n_blocks: 2
+                n_heads: 2
+                drop_p: 0.05
+                pooling: max

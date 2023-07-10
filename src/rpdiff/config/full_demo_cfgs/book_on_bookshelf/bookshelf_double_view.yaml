@@ -1,0 +1,26 @@
+inherit_from: base.yaml
+
+experiment:
+    experiment_name: bookshelf_double_view_test
+    debug: False
+    num_iterations: 100
+    parent_class: syn_bookshelf
+    child_class: syn_book
+    task_name: book_in_bookshelf
+    demo:
+        child_load_pose_type: 'any_pose'
+
+environment:
+    n_cameras: 4
+    cameras:
+        yaw_angles: [330.0, 30.0, 90, 270]
+        distance_set:
+        distance: 1.0
+        pitch: 
+        pitch_set: [-10.0, -10.0, -35.0, -35.0]
+        focus_pt:
+        focus_pt_set: [[0.5, 0.5, 1.4], [0.5, 0.5, 1.4], [0.35, 0.0, 1.1], [0.35, 0.0, 1.1]]
+        single_focus_pt: False
+        single_pitch: False
+        single_distance: True
+

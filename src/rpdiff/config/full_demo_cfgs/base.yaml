@@ -1,0 +1,97 @@
+experiment:
+    experiment_name: smoketest
+    demo_save_root: task_demos
+    debug: False
+    num_iterations: 100
+    pybullet_viz: False
+    pybullet_server: True
+    parent_class:
+    child_class:
+    is_parent_shapenet_obj: 
+    is_child_shapenet_obj: 
+    n_parent_instances: 1
+    upright_ori_diff_thresh_deg: 15 
+    task_name: # set me!
+    demo:
+        rand_mesh_scale: False
+        parent_load_pose_type: 'random_upright'
+        child_load_pose_type: 'random_upright'
+        vary_about_peg: False  # relevant to mug/rack demos
+
+environment:
+    table_z: 1.2
+    table_ori: [0.0, 0.0, 0.7071067811865475, 0.7071067811865476]
+    table_pos: [0.5, 0.0, 0.0]
+    mesh_scale_default: 0.3
+    mesh_scale_high: 0.4
+    mesh_scale_low: 0.2
+    obj_sample_x_high_low: [0.4, 0.5]
+    obj_sample_y_high_low: [-0.4, 0.4]
+    obj_sample_place_x_dist: 0.05  
+    obj_sample_place_y_dist: 0.25  
+    n_cameras: 3 
+    cameras:
+        yaw_angles: [330.0, 30.0, 90]
+        distance_set:
+        distance: 1.0
+        pitch: 
+        pitch_set: [-10.0, -10.0, -35.0]
+        focus_pt:
+        focus_pt_set: [[0.5, 0.5, 1.4], [0.5, 0.5, 1.4], [0.35, 0.0, 1.1]]
+        single_focus_pt: False
+        single_pitch: False
+        single_distance: True
+
+objects:
+    default_upright_euler: [0, 0, 0]
+    categories:
+        mug: 
+            upright_euler: [1.570796, 0, 0]
+            mesh_dir: mug_centered_obj_normalized
+            scale_hl: [0.35, 0.25]
+            scale_default: 0.3
+        syn_rack_easy:
+            upright_euler: 
+            mesh_dir: syn_racks_easy_obj
+            scale_hl: [0.35, 0.25]
+            scale_default: 0.3
+        syn_rack_med: 
+            upright_euler: 
+            mesh_dir: syn_rack_med
+            scale_hl: [0.35, 0.25]
+            scale_default: 0.3
+        syn_rack_hard:
+            upright_euler: 
+            mesh_dir: syn_racks_hard_obj
+            scale_hl: [0.35, 0.25]
+            scale_default: 0.3
+        syn_bookshelf:
+            upright_euler: 
+            mesh_dir: syn_bookshelf_obj_unnormalized
+            scale_hl: [1.005, 0.995]
+            scale_default: 1.0
+        syn_book: 
+            upright_euler: 
+            mesh_dir: syn_books_obj
+            scale_hl: [1.005, 0.995]
+            scale_default: 1.0
+        syn_cabinet:
+            upright_euler: 
+            mesh_dir: syn_can_cabinet_obj_unnormalized
+            scale_hl: [1.005, 0.995]
+            scale_default: 1.0
+        syn_cabinet_packed_uniform:
+            upright_euler: 
+            mesh_dir: syn_can_cabinet_packed_nonuniform_unnormalized
+            scale_hl: [1.005, 0.995]
+            scale_default: 1.0
+        syn_cabinet_packed_nonuniform:
+            upright_euler: 
+            mesh_dir: syn_can_cabinet_packed_uniform_unnormalized
+            scale_hl: [1.005, 0.995]
+            scale_default: 1.0
+        syn_can:
+            upright_euler: 
+            mesh_dir: syn_cans_obj
+            scale_hl: [1.005, 0.995]
+            scale_default: 1.0
