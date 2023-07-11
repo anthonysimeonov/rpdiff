@@ -11,7 +11,7 @@ This is the reference implementation for our paper:
 <img src="./doc/rpdiff-just_sim.gif" alt="drawing" width="320">
 </p>
 
-[Paper](https://arxiv.org/abs/2307.04751) | [Video](https://youtu.be/e6_4wtuUfJw) | [Website](https://anthonysimeonov.github.io/rpdiff-multi-modal/)
+[Paper](https://arxiv.org/abs/2307.04751) | [Video](https://youtu.be/x9noTl_aqu0) | [Website](https://anthonysimeonov.github.io/rpdiff-multi-modal/)
 
 [Anthony Simeonov](https://anthonysimeonov.github.io/), [Ankit Goyal*](https://imankgoyal.github.io/), [Lucas Manuelli*](http://lucasmanuelli.com/), [Lin Yen-Chen](https://yenchenlin.me/),
 [Alina Sarmiento](https://www.linkedin.com/in/alina-sarmiento/), [Alberto Rodriguez](https://meche.mit.edu/people/faculty/ALBERTOR@MIT.EDU), [Pulkit Agrawal**](http://people.csail.mit.edu/pulkitag/), [Dieter Fox**](https://homes.cs.washington.edu/~fox/)
