@@ -458,7 +458,7 @@ def pose_from_vectors(x_vec: np.ndarray, y_vec: np.ndarray, z_vec: np.ndarray, t
     # Normalized frame
     hand_orient_norm = np.vstack((x_vec, y_vec, z_vec))
     hand_orient_norm = hand_orient_norm.transpose()
-    quat = mat2quat(hand_orient_norm)
+    quat = R.from_matrix(hand_orient_norm).as_quat()
     pose = list2pose_stamped(list(trans) + list(quat))
     return pose
 
