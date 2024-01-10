@@ -50,12 +50,12 @@ Install `torch-scatter`/`torch-cluster` packages
 
 ```
 # If torch version 1.13
-pip install torch-scatter -f https://data.pyg.org/whl/torch-1.13.0+cu117.html
-pip install torch-cluster -f https://data.pyg.org/whl/torch-1.13.0+cu117.html
+pip install torch-scatter -f https://data.pyg.org/whl/torch-1.13.0+cu117.html --no-index
+pip install torch-cluster -f https://data.pyg.org/whl/torch-1.13.0+cu117.html --no-index
 
 # If torch version 1.12 (below)
-# pip install torch-scatter -f https://data.pyg.org/whl/torch-1.12.0+cu113.html
-# pip install torch-cluster -f https://data.pyg.org/whl/torch-1.12.0+cu113.html
+# pip install torch-scatter -f https://data.pyg.org/whl/torch-1.12.0+cu113.html --no-index
+# pip install torch-cluster -f https://data.pyg.org/whl/torch-1.12.0+cu113.html --no-index
 ```
 
 Install knn_cuda utils
