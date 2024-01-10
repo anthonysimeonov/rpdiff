@@ -18,7 +18,7 @@ This is the reference implementation for our paper:
 
 ## Installation
 ```
-git clone --recurse git@github.com:anthonysimeonov/rpdiff-dev.git
+git clone --recurse git@github.com:anthonysimeonov/rpdiff.git
 cd rpdiff
 
 # make virtual environment
